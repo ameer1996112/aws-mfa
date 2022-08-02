@@ -13,16 +13,10 @@ The concept behind **aws-mfa** is that there are 2 types of credentials:
 
 Installation:
 -------------
-Option 1
 ```sh
 $ pip install aws-mfa
 ```
 
-Option 2
-```sh
-1. Clone this repo
-2. $ python setup.py install
-```
 
 Credentials File Setup
 ----------------------
