@@ -8,8 +8,8 @@ Please follow the following steps in order to connect to DBeaver , after setting
 ```text
 a. AWS Region (us-west-2)
 b. S3 Endpoint
-c. Access Key
-d. Secret Key
+c. Access Key ( you can type anything ) 
+d. Secret Key ( you can type anything ) 
 ```
 Select the new Athena connection, and press F4, or right-click the connection name and select Edit Connection to edit connection details.
 
