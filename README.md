@@ -23,15 +23,18 @@ Credentials File Setup
 
 In a typical AWS credentials file (located at `~/.aws/credentials`), credentials are stored in sections, denoted by a pair of brackets: `[]`. The `[default]` section stores your default credentials. You can store multiple sets of credentials using different profile names. If no profile is specified, the `[default]` section is always used.
 
-By default long term credential sections are identified by the convention `[<profile_name>-long-term]` and short term credentials are identified by the typical convention: `[<profile_name>]`. The following illustrates how you would configure you credentials file using **aws-mfa** with your default credentials:
+After installing **aws-mfa**, by default long term credential sections are identified by the convention `[<profile_name>-long-term]` and short term credentials are identified by the typical convention: `[<profile_name>]`. The following illustrates how you would configure you credentials file using **aws-mfa** with your default credentials:
 
+ This is how your  AWS credentials file (located at ~/.aws/credentials) looks at first :
 ```ini
-[default-long-term]
+[default]
 aws_access_key_id = YOUR_LONGTERM_KEY_ID
 aws_secret_access_key = YOUR_LONGTERM_ACCESS_KEY
 ```
 
-After running `aws-mfa`, your credentials file would read:
+You need to modify the  AWS credentials file (located at ~/.aws/credentials) and change the profile from the default convention [<profile_name>] to [<profile_name>-long-term] in order to be able to run **aws-mfa**
+
+After running `aws-mfa`, your credentials file would look like:
 
 ```ini
 [default-long-term]
@@ -54,7 +57,7 @@ aws_secret_access_key = YOUR_LONGTERM_ACCESS_KEY
 ```
 
 
-After running `aws-mfa`, your credentials file would read:
+After running `aws-mfa`, your credentials file would look like:
 
 ```ini
 [development-long-term]
@@ -68,62 +71,23 @@ aws_security_token = <POPULATED_BY_AWS-MFA>
 ```
 
 
-Usage
------
-
-```
---device arn:aws:iam::123456788990:mfa/dudeman
-                        The MFA Device ARN. This value can also be provided
-                        via the environment variable 'MFA_DEVICE' or the
-                        ~/.aws/credentials variable 'aws_mfa_device'.
---duration DURATION     The duration, in seconds, that the temporary
-                        credentials should remain valid. Minimum value: 900
-                        (15 minutes). Maximum: 129600 (36 hours). Defaults to
-                        43200 (12 hours), or 3600 (one hour) when using
-                        '--assume-role'. This value can also be provided via
-                        the environment variable 'MFA_STS_DURATION'.
---profile PROFILE       If using profiles, specify the name here. The default
-                        profile name is 'default'. The value can also be
-                        provided via the environment variable 'AWS_PROFILE'.
---long-term-suffix LONG_TERM_SUFFIX
-                        To identify the long term credential section by
-                        [<profile_name>-LONG_TERM_SUFFIX]. Use 'none' to
-                        identify the long term credential section by
-                        [<profile_name>]. Omit to identify the long term 
-                        credential section by [<profile_name>-long-term].
---short-term-suffix SHORT_TERM_SUFFIX
-                        To identify the short term credential section by
-                        [<profile_name>-SHORT_TERM_SUFFIX]. Omit or use 'none'
-                        to identify the short term credential section by
-                        [<profile_name>].
---assume-role arn:aws:iam::123456788990:role/RoleName
-                        The ARN of the AWS IAM Role you would like to assume,
-                        if specified. This value can also be provided via the
-                        environment variable 'MFA_ASSUME_ROLE'
---role-session-name ROLE_SESSION_NAME
-                        Friendly session name required when using --assume-
-                        role. By default, this is your local username.
-```
-
-**Argument precedence**: Command line arguments take precedence over environment variables.
 
 Usage Example
 -------------
 
 Once installed you need to :
 
-1.Ensure you have MFA enabled and configured for your account using a virtual MFA device, such as Google Authenticator on your phone.
+1.Ensure you have MFA enabled and configured for your account using a virtual MFA device, such as Google Authenticator or Authy in our case on your phone.
 
-2.Make some minor modifications to your AWS credentials file (usually found @ ~/.aws/credentials)
+2.Make sure you did the  modifications to your AWS credentials file (usually found @ ~/.aws/credentials)/
 
-In order to empower **aws-mfa** to do its job, let’s copy our default profile and rename it to follow the **aws-mfa** convention of [profilename-long-term] Like so
 
-After you made these modifications now you can run **aws-mfa** *before* running any of your scripts that use any AWS SDK.
+Now you can run **aws-mfa** *before* running any of your scripts that use any AWS SDK.
 
 Using command line arguments:
 
 ```sh
-$> aws-mfa --duration 1800 --device arn:aws:iam::123456788990:mfa/dudeman
+$> aws-mfa --duration 1800 --device arn:aws:iam::123456788990:mfa/dudeman --profile default
 INFO - Using profile: default
 INFO - Your credentials have expired, renewing.
 Enter AWS MFA code for device [arn:aws:iam::123456788990:mfa/dudeman] (renewing for 1800 seconds):123456
@@ -134,16 +98,8 @@ Using environment variables:
 
 ```sh
 export MFA_DEVICE=arn:aws:iam::123456788990:mfa/dudeman
-$> aws-mfa --duration 1800
-INFO - Using profile: default
-INFO - Your credentials have expired, renewing.
-Enter AWS MFA code for device [arn:aws:iam::123456788990:mfa/dudeman] (renewing for 1800 seconds):123456
-INFO - Success! Your credentials will expire in 1800 seconds at: 2015-12-21 23:07:09+00:00
-```
-
-```sh
-export MFA_DEVICE=arn:aws:iam::123456788990:mfa/dudeman
 export MFA_STS_DURATION=1800
+export AWS_PROFILE=default
 $> aws-mfa
 INFO - Using profile: default
 INFO - Your credentials have expired, renewing.
