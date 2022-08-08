@@ -20,10 +20,11 @@ If you have an additional layer of security and use session tokens (for example,
 <img src="./image-20200113144811383.png" />
 
 There are two parameters here you need to change to make use of local aws credential profiles.
+```text
 A. AwsCredentialsProviderArguments (this is the name of you AWS profile stored in .aws folder)
 aws_credentials_profile B. AwsCredentialsProviderClass (Driver class which allows to use session tokens)
 com.simba.athena.amazonaws.auth.profile.ProfileCredentialsProvider
-
+```
 <img src="./image-20200113144924061.png" />
 
 Change them and click **OK** to apply new settings.
